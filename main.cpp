@@ -22,69 +22,227 @@ struct Piece {
     int rotation;
 };
 
-
-//T  Pieces
-constexpr int T_PIECE[4][4] = {
-    {1, 1, 1, 0},
-    {0, 1, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-};
-
-constexpr int BL_PIECE[4][4] = {
-    {0, 2, 0, 0},
-    {0, 2, 0, 0},
-    {2, 2, 0, 0},
-    {0, 0, 0, 0}
-};
-
-constexpr int BS_PIECE[4][4] = {
-    {3, 3, 0, 0},
-    {0, 3, 3, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-};
-
-constexpr int O_PIECE[4][4] = {
-    {4, 4, 0, 0},
-    {4, 4, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-};
-
-constexpr int S_PIECE[4][4] = {
-    {0, 5, 5, 0},
-    {5, 5, 0, 0},
-    {0, 0, 0, 0},
-    {0, 0, 0, 0}
-};
-
-constexpr int L_PIECE[4][4] = {
-    {6, 0, 0, 0},
-    {6, 0, 0, 0},
-    {6, 6, 0, 0},
-    {0, 0, 0, 0}
-};
-
-constexpr int I_PIECE[4][4] = {
-    {7, 0, 0, 0},
-    {7, 0, 0, 0},
-    {7, 0, 0, 0},
-    {7, 0, 0, 0}
-};
-
-const int (*get_shape(int pieceType))[4]
-{
-    switch (pieceType)
+constexpr int T_PIECE[4][4][4] = {
+    // Rotation 0
     {
-        case 1: return T_PIECE;
-        case 2: return BL_PIECE;
-        case 3: return BS_PIECE;
-        case 4: return O_PIECE;
-        case 5: return S_PIECE;
-        case 6: return L_PIECE;
-        case 7: return I_PIECE;
-        default: return O_PIECE;
+        {1, 1, 1, 0},
+        {0, 1, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    },
+
+    // Rotation 1
+    {
+        {0, 1, 0, 0},
+        {1, 1, 0, 0},
+        {0, 1, 0, 0},
+        {0, 0, 0, 0}
+    },
+
+    // Rotation 2
+    {
+        {0, 1, 0, 0},
+        {1, 1, 1, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    },
+
+    // Rotation 3
+    {
+        {0, 1, 0, 0},
+        {0, 1, 1, 0},
+        {0, 1, 0, 0},
+        {0, 0, 0, 0}
+    }
+};
+
+
+//Backwards Left
+constexpr int BL_PIECE[4][4][4] = {
+    {
+        {2, 0, 0, 0},
+        {2, 2, 2, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {0, 2, 2, 0},
+        {0, 2, 0, 0},
+        {0, 2, 0, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {0, 0, 0, 0},
+        {2, 2, 2, 0},
+        {0, 0, 2, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {0, 2, 0, 0},
+        {0, 2, 0, 0},
+        {2, 2, 0, 0},
+        {0, 0, 0, 0}
+    }
+};
+
+//Backwards stairs
+constexpr int BS_PIECE[4][4][4] = {
+    {
+        {3, 3, 0, 0},
+        {0, 3, 3, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {0, 0, 3, 0},
+        {0, 3, 3, 0},
+        {0, 3, 0, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {0, 0, 0, 0},
+        {3, 3, 0, 0},
+        {0, 3, 3, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {0, 3, 0, 0},
+        {3, 3, 0, 0},
+        {3, 0, 0, 0},
+        {0, 0, 0, 0}
+    }
+
+};
+
+//O Piece
+constexpr int O_PIECE[4][4][4] = {
+    {
+        {4, 4, 0, 0},
+        {4, 4, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    },
+
+    {
+        {4, 4, 0, 0},
+        {4, 4, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    },
+
+    {
+        {4, 4, 0, 0},
+        {4, 4, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    },
+
+    {
+        {4, 4, 0, 0},
+        {4, 4, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    }
+};
+
+//Stair Piece
+constexpr int S_PIECE[4][4][4] = {
+    {
+        {0, 5, 5, 0},
+        {5, 5, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {5, 0, 0, 0},
+        {5, 5, 0, 0},
+        {0, 5, 0, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {0, 5, 5, 0},
+        {5, 5, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {5, 0, 0, 0},
+        {5, 5, 0, 0},
+        {0, 5, 0, 0},
+        {0, 0, 0, 0}
+    }
+
+};
+
+//L Piece
+constexpr int L_PIECE[4][4][4] = {
+    {
+        {6, 0, 0, 0},
+        {6, 0, 0, 0},
+        {6, 6, 0, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {6, 6, 6, 0},
+        {6, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {6, 6, 0, 0},
+        {0, 6, 0, 0},
+        {0, 6, 0, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {0, 0, 6, 0},
+        {6, 6, 6, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    }
+};
+
+//I Piece
+constexpr int I_PIECE[4][4][4] = {
+    {
+        {7, 0, 0, 0},
+        {7, 0, 0, 0},
+        {7, 0, 0, 0},
+        {7, 0, 0, 0}
+    },
+    {
+        {7, 7, 7, 7},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    },
+    {
+        {7, 0, 0, 0},
+        {7, 0, 0, 0},
+        {7, 0, 0, 0},
+        {7, 0, 0, 0}
+    },
+    {
+        {7, 7, 7, 7},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    }
+
+};
+
+const int (*get_shape(const Piece& piece))[4]
+{
+    switch (piece.type)
+    {
+        case 1: return T_PIECE[piece.rotation];
+        case 2: return BL_PIECE[piece.rotation];
+        case 3: return BS_PIECE[piece.rotation];
+        case 4: return O_PIECE[piece.rotation];
+        case 5: return S_PIECE[piece.rotation];
+        case 6: return L_PIECE[piece.rotation];
+        case 7: return I_PIECE[piece.rotation];
+        default: return O_PIECE[0];
     }
 }
 
@@ -149,7 +307,7 @@ void draw_cell(SDL_Renderer* renderer,
 
 void draw_piece(SDL_Renderer* renderer, const Piece& piece)
 {
-    const auto shape = get_shape(piece.type);
+    const auto shape = get_shape(piece);
 
     int red;
     int green;
@@ -193,7 +351,7 @@ Piece spawnPiece() {
 
 bool canMove(const Board& board, const Piece& piece, int dx, int dy) {
 
-    const auto outline = get_shape(piece.type);
+    const auto outline = get_shape(piece);
 
     for (int row = 0; row < 4; row++) {
         for (int col = 0; col <4; col++) {
@@ -373,8 +531,19 @@ int main()
                         break;
 
                     case SDLK_UP:
-                        // Rotate piece
+                    {
+                        Piece rotatedPiece = currentPiece;
+
+                        rotatedPiece.rotation++;
+                        rotatedPiece.rotation %= 4;
+
+                        if (canMove(board, rotatedPiece, 0, 0))
+                        {
+                            currentPiece.rotation = rotatedPiece.rotation;
+                        }
+
                         break;
+                    }
                 }
             }
         }
