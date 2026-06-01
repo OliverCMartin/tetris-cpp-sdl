@@ -378,7 +378,7 @@ bool canMove(const Board& board, const Piece& piece, int dx, int dy) {
             }
 
             //existing block
-            if (board[newX][newY] != 0) {
+            if (board[newY][newX] != 0) {
                 return false;
             }
         }
@@ -422,6 +422,24 @@ void draw_board(const Board& board, SDL_Renderer* renderer)
                 blue
             );
         }
+    }
+
+}
+
+void lock_Piece(Board& board, const Piece& piece) {
+    const auto shape = get_shape(piece);
+
+    for (int row = 0; row < 4; row++)
+    {
+        for (int col = 0; col < 4; col++) {
+
+            if (shape[row][col] != 0) {
+                board[piece.y + row][piece.x + col] = piece.type;
+            }
+
+        }
+
+
     }
 
 }
@@ -527,6 +545,10 @@ int main()
                     case SDLK_DOWN:
                         if (canMove(board, currentPiece, 0, 1)) {
                             currentPiece.y++;
+                        }
+                        else {
+                            lock_Piece(board, currentPiece);
+                            currentPiece = spawnPiece();
                         }
                         break;
 
