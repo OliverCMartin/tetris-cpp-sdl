@@ -23,7 +23,7 @@ struct Piece {
 };
 
 
-
+//T  Pieces
 constexpr int T_PIECE[4][4] = {
     {1, 1, 1, 0},
     {0, 1, 0, 0},
@@ -191,6 +191,45 @@ Piece spawnPiece() {
     0};
 }
 
+bool canMove(const Board& board, const Piece& piece, int dx, int dy) {
+
+    const auto outline = get_shape(piece.type);
+
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col <4; col++) {
+            if (outline[row][col] == 0) {
+                continue;
+            }
+
+            int newX = piece.x + col + dx;
+            int newY = piece.y + row + dy;
+
+            //left wall
+            if (newX < 0) {
+                return false;
+            }
+
+            //right wall
+            if (newX >= 10) {
+                return false;
+            }
+
+            //floor
+            if (newY >= 20) {
+                return false;
+            }
+
+            //existing block
+            if (board[newX][newY] != 0) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+
+}
+
 void draw_board(const Board& board, SDL_Renderer* renderer)
 {
     for (int row = 0; row < 20; row++)
@@ -226,6 +265,7 @@ void draw_board(const Board& board, SDL_Renderer* renderer)
             );
         }
     }
+
 }
 
 
@@ -310,6 +350,33 @@ int main()
                 running = false;
             }
 
+            if (event.type == SDL_KEYDOWN)
+            {
+                switch (event.key.keysym.sym)
+                {
+                    case SDLK_LEFT:
+                        if (canMove(board, currentPiece, -1, 0)) {
+                            currentPiece.x--;
+                        }
+                        break;
+
+                    case SDLK_RIGHT:
+                        if (canMove(board, currentPiece, 1, 0)) {
+                            currentPiece.x++;
+                        }
+                        break;
+
+                    case SDLK_DOWN:
+                        if (canMove(board, currentPiece, 0, 1)) {
+                            currentPiece.y++;
+                        }
+                        break;
+
+                    case SDLK_UP:
+                        // Rotate piece
+                        break;
+                }
+            }
         }
 
 
