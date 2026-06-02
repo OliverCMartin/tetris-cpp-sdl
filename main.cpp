@@ -467,19 +467,20 @@ void clear_row(Board& board, int clearedRow)
     board[0].fill(0);
 }
 
-void clear_lines(Board& board) //maybe turn to an int for scoring later
+int clear_lines(Board& board) //maybe turn to an int for scoring later
 {
+    int linesCleared = 0;
     for (int row = 19; row >= 0; row--)
     {
         if (row_full(board, row))
         {
             clear_row(board, row);
-
+            linesCleared++;
             row++;
         }
     }
 
-    //posible return value
+    return linesCleared;
 }
 
 
@@ -536,6 +537,7 @@ int main()
     }
 
     Uint32 lastFallTime = SDL_GetTicks();
+    int score = 0;
 
     Board board = {{
         {{0,0,0,0,0,0,0,0,0,0}},
@@ -600,7 +602,26 @@ int main()
                         }
                         else {
                             lock_piece(board, currentPiece);
-                            clear_lines(board);
+                            int linesCleared = clear_lines(board);
+
+                            switch (linesCleared) {
+                                case 1:
+                                    score += 100;
+                                    break;
+
+                                case 2:
+                                    score += 300;
+                                    break;
+
+                                case 3:
+                                    score += 500;
+                                    break;
+
+                                case 4:
+                                    score += 800;
+                                    break;
+
+                            }
 
                             currentPiece = spawnPiece();
                             if (!canMove(board, currentPiece, 0, 0))
@@ -633,6 +654,7 @@ int main()
 
         if (currentTime - lastFallTime >= 1000)
         {
+            std::cout << score << "\n";
             if (canMove(board, currentPiece, 0, 1))
             {
                 currentPiece.y++;
