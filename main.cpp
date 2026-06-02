@@ -426,7 +426,7 @@ void draw_board(const Board& board, SDL_Renderer* renderer)
 
 }
 
-void lock_Piece(Board& board, const Piece& piece) {
+void lock_piece(Board& board, const Piece& piece) {
     const auto shape = get_shape(piece);
 
     for (int row = 0; row < 4; row++)
@@ -444,7 +444,57 @@ void lock_Piece(Board& board, const Piece& piece) {
 
 }
 
+bool row_full(const Board& board, int row)
+{
+    for (int col = 0; col < 10; col++)
+    {
+        if (board[row][col] == 0)
+        {
+            return false;
+        }
+    }
 
+    return true;
+}
+
+void clear_row(Board& board, int clearedRow)
+{
+    for (int row = clearedRow; row > 0; row--)
+    {
+        board[row] = board[row - 1];
+    }
+
+    board[0].fill(0);
+}
+
+void clear_lines(Board& board) //maybe turn to an int for scoring later
+{
+    for (int row = 19; row >= 0; row--)
+    {
+        if (row_full(board, row))
+        {
+            clear_row(board, row);
+
+            row++;
+        }
+    }
+
+    //posible return value
+}
+
+
+bool checkLoss(const Board& board)
+{
+    for (int col = 0; col < 10; col++)
+    {
+        if (board[0][col] != 0)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 int main()
 {
@@ -484,6 +534,8 @@ int main()
         std::cout << "Failed to create renderer\n";
         return -1;
     }
+
+    Uint32 lastFallTime = SDL_GetTicks();
 
     Board board = {{
         {{0,0,0,0,0,0,0,0,0,0}},
@@ -547,8 +599,15 @@ int main()
                             currentPiece.y++;
                         }
                         else {
-                            lock_Piece(board, currentPiece);
+                            lock_piece(board, currentPiece);
+                            clear_lines(board);
+
                             currentPiece = spawnPiece();
+                            if (!canMove(board, currentPiece, 0, 0))
+                            {
+                                running = false;
+                            }
+
                         }
                         break;
 
@@ -568,6 +627,26 @@ int main()
                     }
                 }
             }
+        }
+
+        Uint32 currentTime = SDL_GetTicks();
+
+        if (currentTime - lastFallTime >= 1000)
+        {
+            if (canMove(board, currentPiece, 0, 1))
+            {
+                currentPiece.y++;
+            }
+            else
+            {
+                lock_piece(board, currentPiece);
+
+                clear_lines(board);
+
+                currentPiece = spawnPiece();
+            }
+
+            lastFallTime = currentTime;
         }
 
 
